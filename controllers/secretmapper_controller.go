@@ -34,32 +34,20 @@ type SecretmapperReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=theplatformteam.com,resources=secretmappers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=theplatformteam.com,resources=secretmappers/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=theplatformteam.com,resources=secretmappers/finalizers,verbs=update
-
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the Secretmapper object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *SecretmapperReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := logger.WithValues("secretmapper", req.NamespacedName)
+	log := log.logger.WithValues("secretmapper", req.NamespacedName)
 
 	// Fetch the SecretMapper custom resource
-	var secretMapper v1alpha1.SecretMapper
+	var secretMapper v1alpha1.Secretmapper
 	if err := r.Get(ctx, req.NamespacedName, &secretMapper); err != nil {
 		log.Error(err, "Unable to fetch SecretMapper")
 		return ctrl.Result{}, err
 	}
 
 	// Extract namespace and secret name from the custom resource spec
-	namespace := secretMapper.Spec.Source.Namespace
-	secretName := secretMapper.Spec.Source.Name
+	namespace := secretMapper.Spec.source.namespace
+	secretName := secretMapper.Spec.source.name
 
 	// Get the Kubernetes configuration from the manager
 	config := r.Mgr.GetConfig()
