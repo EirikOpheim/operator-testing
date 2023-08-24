@@ -48,8 +48,8 @@ func (r *SecretmapperReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	}
 
 	// Extract namespace and secret name from the custom resource spec
-	namespace := secretMapper.Spec.source.namespace
-	secretName := secretMapper.Spec.source.name
+	namespace := secretMapper.source.namespace
+	secretName := secretMapper.source.name
 
 	// Get the Kubernetes configuration from the manager
 	config := r.Mgr.GetConfig()
