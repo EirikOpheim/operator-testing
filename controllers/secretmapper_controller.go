@@ -18,11 +18,13 @@ package controllers
 
 import (
 	"context"
+	"log"
+
+	"k8s.io/client-go/kubernetes"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	theplatformteamcomv1alpha1 "github.com/EirikOpheim/operator-testing.git/api/v1alpha1"
 )
@@ -47,9 +49,39 @@ type SecretmapperReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *SecretmapperReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	// Fetch the SecretMapper custom resource
+	var secretMapper v1alpha1.SecretMapper
+	if err := r.Get(ctx, req.NamespacedName, &secretMapper); err != nil {
+		log.Println("Unable to fetch SecretMapper:", err)
+		return ctrl.Result{}, err
+	}
 
-	// TODO(user): your logic here
+	config := r.Config
+	if config == nil {
+		log.Println("Kubernetes configuration not found")
+		return ctrl.Result{}, nil
+	}
+
+	// Extract namespace and secret name from the custom resource spec
+	namespace := secretMapper.Spec.Source.Namespace
+	secretName := secretMapper.Spec.Source.Name
+
+	// Get the Kubernetes clientset
+	clientset, err := kubernetes.NewForConfig(r.Config)
+	if err != nil {
+		log.Println("Unable to create Kubernetes client:", err)
+		return ctrl.Result{}, err
+	}
+
+	// Get the Secret
+	secret, err := clientset.CoreV1().Secrets(namespace).Get(ctx, secretName, metav1.GetOptions{})
+	if err != nil {
+		log.Println("Unable to fetch Secret:", err)
+		return ctrl.Result{}, err
+	}
+
+	// Use the secret data as needed
+	log.Println("Secret data:", secret.Data)
 
 	return ctrl.Result{}, nil
 }

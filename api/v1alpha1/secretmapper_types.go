@@ -25,11 +25,13 @@ import (
 
 // SecretmapperSpec defines the desired state of Secretmapper
 type SecretmapperSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	source 		NamespacedName `json:"source"`
+	destination NamespacedName `json:"destination"`
+}
 
-	// Foo is an example field of Secretmapper. Edit secretmapper_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+type NamespacedName struct {
+	namespace string `json:"namespace"`
+	name	  string `json:"name"`
 }
 
 // SecretmapperStatus defines the observed state of Secretmapper
