@@ -25,6 +25,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"github.com/EirikOpheim/operator-testing.git/api/v1alpha1"
 )
@@ -37,7 +38,7 @@ type SecretmapperReconciler struct {
 
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *SecretmapperReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.logger.WithValues("secretmapper", req.NamespacedName)
+	log := logger.WithValues("secretmapper", req.NamespacedName)
 
 	// Fetch the SecretMapper custom resource
 	var secretMapper v1alpha1.Secretmapper
