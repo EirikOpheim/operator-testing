@@ -25,13 +25,13 @@ import (
 
 // SecretmapperSpec defines the desired state of Secretmapper
 type SecretmapperSpec struct {
-	source 		NamespacedName `json:"source"`
+	source      NamespacedName `json:"source"`
 	destination NamespacedName `json:"destination"`
 }
 
 type NamespacedName struct {
 	namespace string `json:"namespace"`
-	name	  string `json:"name"`
+	name      string `json:"name"`
 }
 
 // SecretmapperStatus defines the observed state of Secretmapper
